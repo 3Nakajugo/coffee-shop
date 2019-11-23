@@ -16,7 +16,7 @@ CORS(app)
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
 
 ## ROUTES
 '''
@@ -98,13 +98,44 @@ def unprocessable(error):
 
 '''
 
+@app.errorhandler(400)
+def user_error(error):
+    return jsonify({
+        "success": False,
+        "error": 400,
+        "message": error.description
+    }), 400
+
+
+@app.errorhandler(401)
+def permission_error(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": "Authentication error"
+    }), 401
+
 '''
 @TODO implement error handler for 404
     error handler should conform to general task above 
 '''
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        "success": False,
+        "error": 404,
+        "message": "resource not found"
+    }), 404
 
 
 '''
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
 '''
+@app.errorhandler(AuthError)
+def invalid_claims(error):
+    return jsonify({
+        "success": False,
+        "error": 401,
+        "message": error.__dict__
+    }), 401
