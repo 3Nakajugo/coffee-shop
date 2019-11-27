@@ -28,6 +28,18 @@ db_drop_and_create_all()
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks')
+def get_drinks():
+    """
+        Endpoint to get all drinks
+    """
+    all_drinks = Drink.query.all()
+    
+    return jsonify({
+        "success": True,
+        "drinks": [drink.short() for drink in all_drinks ]
+    }), 200
+
 
 '''
 @TODO implement endpoint
