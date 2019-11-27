@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 AUTH0_DOMAIN = 'coffeeshoop.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'Coffeeshop'
+API_AUDIENCE = 'coffeeshop'
 
 ## AuthError Exception
 '''
@@ -53,7 +53,6 @@ def get_token_auth_header():
             'code': 'invalid_header',
             'description': 'Token not found.'
         }, 401)
-        # abort(401, 'Invalid auth header')
     elif len(parts) == 1:
         raise AuthError({
             'code': 'invalid_header',
