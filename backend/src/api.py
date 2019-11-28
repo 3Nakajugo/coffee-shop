@@ -77,8 +77,20 @@ def get_drinks_detail(payload):
 '''
 
 @app.route('/drinks', methods=['POST'])
-def create_drink():
-    pass
+@requires_auth('post:drinks')
+def create_drink(payload):
+    data = request.get_json()
+
+    recipe = data['recipe']
+
+    if isinstance(recipe, dict):
+            recipe = [recipe]
+    
+    drink = Drink()
+    drink.title = data['title']
+    drink.recipe = json.dumps(recipe)
+    drink.insert()
+    return jsonify({'success': True, 'drinks': [drink.long()]})
 
 
 '''
@@ -92,6 +104,30 @@ def create_drink():
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
+@app.route('/drinks/<int:id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
+def update_drink(payload, id):
+    """
+        Endpoint for updating a drink by drink id
+    """
+    data = request.get_json()
+    drink = Drink.query.filter(Drink.id == id).one_or_none()
+
+    if not drink:
+        abort(404)
+
+    drink.recipe = data.get("recipe", drink.recipe)
+    drink.title = data.get("title", drink.title)
+
+    if isinstance(drink.recipe, list):
+        drink.recipe = json.dumps(drink.recipe)
+
+    drink.update()
+
+    return jsonify({
+        "success": True,
+        "drinks": drink.long()
+    }), 200
 
 
 '''
@@ -104,6 +140,23 @@ def create_drink():
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
+
+@app.route('/drinks/<int:id>', methods=['DELETE'])
+@requires_auth('delete:drinks')
+def delete_drinks(payload, id):
+    """
+        Delete drinks by drink id
+    """
+    drink = Drink.query.filter(Drink.id == id).one_or_none()
+
+    if not drink:
+        abort(404)
+    drink.delete()
+
+    return jsonify({
+        "success": True,
+        "delete": id
+    }), 200
 
 
 ## Error Handling
