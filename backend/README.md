@@ -37,7 +37,7 @@ From within the `./src` directory first ensure you are working using your create
 Each time you open a new terminal session, run:
 
 ```bash
-export FLASK_APP=api.py;
+export FLASK_APP=api.py
 ```
 
 To run the server, execute:
@@ -83,3 +83,13 @@ There are `@TODO` comments throughout the `./backend/src`. We recommend tackling
 
 1. `./src/auth/auth.py`
 2. `./src/api.py`
+
+### Endpoints
+
+|Endpoint | Description | Permission | Body   | Response|
+| ------  | ------      |------      |------  |------   |
+|GET /drinks| Fetches drinks | None | None | list of drinks |
+|GET /drinks-detail| Fetches drinks |get:drinks-detial | None | list of drinks |
+|POST /drinks| Creates new drinks |post:drinks | `{"title":"Water","recipe":[{"name":"Water","color":"Blue","parts":1}]}` | list of drinks |
+|PATCH /drinks/<int:id>| Updates a drinks |patch:drinks | `{"title": "Water5}` | list of drinks |
+|DELETE /drinks/<int:id>| deletes a  drink |delete:drinks |None | id of deleted drink |
